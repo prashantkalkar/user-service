@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @RunWith(SpringRestPactRunner.class)
 @Provider("user_service")
-@PactFolder("/Users/prashant/Contents/ee/cdc-pact-expert-talk/order-service/target/pacts")
+@PactFolder("../order-service/target/pacts")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserServiceTest {
 
