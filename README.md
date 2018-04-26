@@ -11,8 +11,7 @@ Repo to contain producer code. Part of the CDC expert talk.
   
   ### /user GET request:
   ```
-  curl -X GET \
-    http://localhost:8080/user/myID 
+  curl -X GET http://localhost:8080/user/myID 
   ```
   ### Response: HTTP 200 with body:
   ```
