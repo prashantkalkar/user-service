@@ -1,7 +1,13 @@
 # user-service
 Repo to contain producer code. Part of the CDC expert talk.
 
-## Service endpoints. 
+## How to start a service:
+
+### Make sure you have jdk and mvn installed and added in the path
+### Run following command to make service up:
+```mvn spring-boot:run```
+
+## Service endpoints:
   
   ### /user GET request:
   ```
