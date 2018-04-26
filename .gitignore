@@ -22,10 +22,5 @@
 hs_err_pid*
 /user-service.iml
 .idea/
-src/main/resources/
-src/test/
-target/generated-sources/
-target/maven-archiver/
-target/maven-status/
-target/user-service-1.0-SNAPSHOT.jar.original
+target/
 user-service.iml
