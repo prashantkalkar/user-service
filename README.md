@@ -23,3 +23,6 @@ Repo to contain producer code. Part of the CDC expert talk.
       "address": "pune"
   }
   ```
+
+## How to run CDC test:
+```mvn clean install``` or ```mvn test```
