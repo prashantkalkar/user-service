@@ -14,9 +14,9 @@
     </parent>
 
     <scm>
-        <connection>scm|git|ssh://git@github.com:prashant-ee/user-service.git</connection>
-        <url>scm|git|ssh://git@github.com:prashant-ee/user-service.git</url>
-        <developerConnection>scm|git|ssh:git@github.com:prashant-ee/user-service.git</developerConnection>
+        <connection>scm|git|https://git@github.com:prashant-ee/user-service.git</connection>
+        <url>scm|git|https://git@github.com:prashant-ee/user-service.git</url>
+        <developerConnection>scm|git|https://git@github.com:prashant-ee/user-service.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
