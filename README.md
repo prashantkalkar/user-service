@@ -3,7 +3,7 @@ Repo to contain producer code. Part of the CDC expert talk.
 
 ## How to start a service:
 
-### Make sure you have jdk and mvn installed and added in the path
+Make sure you have <strong>jdk</strong> and <strong>mvn</strong> installed and added in the path
 ### Run following command to make service up:
 ```mvn spring-boot:run```
 
