@@ -22,20 +22,20 @@
 
     <distributionManagement>
         <downloadUrl>
-            http://localhost:8081/nexus/content/repositories/releases
+            http://mynexus:8081/nexus/content/repositories/releases
         </downloadUrl>
         <repository>
             <uniqueVersion>false</uniqueVersion>
             <id>releases</id>
             <name>local-nexus-releases</name>
-            <url>http://localhost:8081/nexus/content/repositories/releases/</url>
+            <url>http://mynexus:8081/nexus/content/repositories/releases/</url>
             <layout>default</layout>
         </repository>
         <snapshotRepository>
             <uniqueVersion>true</uniqueVersion>
             <id>snapshots</id>
             <name>local-nexus-snapshot-releases</name>
-            <url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
+            <url>http://mynexus:8081/nexus/content/repositories/snapshots/</url>
             <layout>default</layout>
         </snapshotRepository>
     </distributionManagement>
