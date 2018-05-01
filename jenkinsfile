@@ -28,18 +28,47 @@ node {
             def artifactFile = findFiles glob: 'target/user-service*.jar'
             def versionNo = artifactFile[0].name.minus("user-service-").minus(".jar")
 
-            def tagName = "latest"
-
-            // publish verification result to pact broker
-            def response = httpRequest "http://broker_app/pacts/provider/user_service/consumer/order_service/${tagName}"
+            // publish verification result to pact broker - It might be possible to extract it in a function.
+            def response = httpRequest "http://broker_app/pacts/provider/user_service/consumer/order_service/latest"
             if(response.status == 200) {
                 def props = readJSON text: response.content
                 def publishUrl = props._links["pb:publish-verification-results"].href
 
-                httpRequest httpMode: 'POST', requestBody: """{
-                  "success": true,
-                  "providerApplicationVersion": "${versionNo}"
-                }""", url: publishUrl
+                httpRequest customHeaders: [[maskValue: false, name: 'Content-Type', value: 'application/json']], httpMode: 'POST', requestBody: """{
+                                  "success": true,
+                                  "providerApplicationVersion": "${versionNo}"
+                                }""", url: publishUrl
+
+            } else if (response.status != 404) {
+                currentBuild.result = 'FAILURE'
+            }
+
+
+            def response = httpRequest "http://broker_app/pacts/provider/user_service/consumer/order_service/DEV"
+            if(response.status == 200) {
+                def props = readJSON text: response.content
+                def publishUrl = props._links["pb:publish-verification-results"].href
+
+                httpRequest customHeaders: [[maskValue: false, name: 'Content-Type', value: 'application/json']], httpMode: 'POST', requestBody: """{
+                                  "success": true,
+                                  "providerApplicationVersion": "${versionNo}"
+                                }""", url: publishUrl
+
+            } else if (response.status != 404) {
+                currentBuild.result = 'FAILURE'
+            }
+
+
+            def response = httpRequest "http://broker_app/pacts/provider/user_service/consumer/order_service/PROD"
+            if(response.status == 200) {
+                def props = readJSON text: response.content
+                def publishUrl = props._links["pb:publish-verification-results"].href
+
+                httpRequest customHeaders: [[maskValue: false, name: 'Content-Type', value: 'application/json']], httpMode: 'POST', requestBody: """{
+                                  "success": true,
+                                  "providerApplicationVersion": "${versionNo}"
+                                }""", url: publishUrl
+
             } else if (response.status != 404) {
                 currentBuild.result = 'FAILURE'
             }
