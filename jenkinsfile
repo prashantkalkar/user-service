@@ -44,9 +44,9 @@ node {
             }
 
 
-            def response = httpRequest "http://broker_app/pacts/provider/user_service/consumer/order_service/DEV"
-            if(response.status == 200) {
-                def props = readJSON text: response.content
+            def devResponse = httpRequest "http://broker_app/pacts/provider/user_service/consumer/order_service/DEV"
+            if(devResponse.status == 200) {
+                def props = readJSON text: devResponse.content
                 def publishUrl = props._links["pb:publish-verification-results"].href
 
                 httpRequest customHeaders: [[maskValue: false, name: 'Content-Type', value: 'application/json']], httpMode: 'POST', requestBody: """{
@@ -54,14 +54,14 @@ node {
                                   "providerApplicationVersion": "${versionNo}"
                                 }""", url: publishUrl
 
-            } else if (response.status != 404) {
+            } else if (devResponse.status != 404) {
                 currentBuild.result = 'FAILURE'
             }
 
 
-            def response = httpRequest "http://broker_app/pacts/provider/user_service/consumer/order_service/PROD"
-            if(response.status == 200) {
-                def props = readJSON text: response.content
+            def prodResponse = httpRequest "http://broker_app/pacts/provider/user_service/consumer/order_service/PROD"
+            if(prodResponse.status == 200) {
+                def props = readJSON text: prodResponse.content
                 def publishUrl = props._links["pb:publish-verification-results"].href
 
                 httpRequest customHeaders: [[maskValue: false, name: 'Content-Type', value: 'application/json']], httpMode: 'POST', requestBody: """{
@@ -69,7 +69,7 @@ node {
                                   "providerApplicationVersion": "${versionNo}"
                                 }""", url: publishUrl
 
-            } else if (response.status != 404) {
+            } else if (prodResponse.status != 404) {
                 currentBuild.result = 'FAILURE'
             }
         }
