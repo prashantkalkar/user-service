@@ -1,15 +1,53 @@
 node {
     checkout scm
 
-    stage('Build') {
-        sh 'mvn clean install -DskipTests'
+    stage('abort-on-maven-release-commit') {
+        def latestCommitMessage = sh script: 'git log -n 1 --pretty=format:"%s"', returnStdout: true
+        if (latestCommitMessage == '[maven-release-plugin] prepare for next development iteration') {
+            currentBuild.result = 'ABORTED'
+            return
+        }
     }
 
-    stage('Test') {
-        echo 'test'
+    stage('Build & Test') {
+        if(currentBuild.result != 'ABORTED' && currentBuild.result != 'FAILURE') {
+            sh 'mvn clean install -Dpact.verifier.publishResults=false'
+        }
+    }
+
+    stage('build and release artifact') {
+        if(currentBuild.result != 'ABORTED' && currentBuild.result != 'FAILURE') {
+            sh 'mvn -Dresume=false -DdryRun=true release:prepare -Darguments="-DskipTests"'
+            sh 'mvn -Dresume=false release:prepare release:perform -Darguments="-DskipTests"'
+        }
+    }
+
+    stage('Publish Pact verification results') {
+        if(currentBuild.result != 'ABORTED' && currentBuild.result != 'FAILURE') {
+            // extract version number
+            def artifactFile = findFiles glob: 'target/user-service*.jar'
+            def versionNo = artifactFile[0].name.minus("user-service-").minus(".jar")
+
+            def tagName = "latest"
+
+            // publish verification result to pact broker
+            def response = httpRequest "http://broker_app/pacts/provider/user_service/consumer/order_service/${tagName}"
+            if(response.status == 200) {
+                def props = readJSON text: response.content
+                def publishUrl = props._links["pb:publish-verification-results"].href
+
+                httpRequest httpMode: 'POST', requestBody: """{
+                  "success": true,
+                  "providerApplicationVersion": "${versionNo}"
+                }""", url: publishUrl
+            } else if (response.status != 404) {
+                currentBuild.result = 'FAILURE'
+            }
+        }
     }
 
     stage('Deploy') {
-        echo 'deploy'
+        if(currentBuild.result != 'ABORTED' && currentBuild.result != 'FAILURE') {
+            echo 'deploy'
+        }
     }
-}
