@@ -29,7 +29,7 @@ node {
             def versionNo = artifactFile[0].name.minus("user-service-").minus(".jar")
 
             // publish verification result to pact broker - It might be possible to extract it in a function.
-            def response = httpRequest "http://broker_app/pacts/provider/user_service/consumer/order_service/latest"
+            def response = httpRequest url: "http://broker_app/pacts/provider/user_service/consumer/order_service/latest", validResponseCodes: '100:399,404'
             if(response.status == 200) {
                 def props = readJSON text: response.content
                 def publishUrl = props._links["pb:publish-verification-results"].href
@@ -39,12 +39,9 @@ node {
                                   "providerApplicationVersion": "${versionNo}"
                                 }""", url: publishUrl
 
-            } else if (response.status != 404) {
-                currentBuild.result = 'FAILURE'
             }
 
-
-            def devResponse = httpRequest "http://broker_app/pacts/provider/user_service/consumer/order_service/DEV"
+            def devResponse = httpRequest url: "http://broker_app/pacts/provider/user_service/consumer/order_service/DEV", validResponseCodes: '100:399,404'
             if(devResponse.status == 200) {
                 def props = readJSON text: devResponse.content
                 def publishUrl = props._links["pb:publish-verification-results"].href
@@ -54,12 +51,10 @@ node {
                                   "providerApplicationVersion": "${versionNo}"
                                 }""", url: publishUrl
 
-            } else if (devResponse.status != 404) {
-                currentBuild.result = 'FAILURE'
             }
 
 
-            def prodResponse = httpRequest "http://broker_app/pacts/provider/user_service/consumer/order_service/PROD"
+            def prodResponse = httpRequest url: "http://broker_app/pacts/provider/user_service/consumer/order_service/PROD", validResponseCodes: '100:399,404'
             if(prodResponse.status == 200) {
                 def props = readJSON text: prodResponse.content
                 def publishUrl = props._links["pb:publish-verification-results"].href
@@ -69,8 +64,6 @@ node {
                                   "providerApplicationVersion": "${versionNo}"
                                 }""", url: publishUrl
 
-            } else if (prodResponse.status != 404) {
-                currentBuild.result = 'FAILURE'
             }
         }
     }
