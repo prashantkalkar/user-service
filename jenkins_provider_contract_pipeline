@@ -1,0 +1,44 @@
+node {
+
+    stage('latest-provider-check') {
+        def response = httpRequest url: 'http://broker_app/pacticipants/user_service/latest-version/'
+        def props = readJSON text: response.content
+        def latestReleasedVersion = props.number
+
+        sh 'rm -rf user-service-latest-released-version'
+        dir('user-service-latest-released-version') {
+            checkout([$class: 'GitSCM', branches: [[name: "refs/tags/user-service-${latestReleasedVersion}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: 'latest-user-service']], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:prashant-ee/user-service.git']]])
+
+            // run cdc tests
+            sh 'mvn clean install'
+        }
+    }
+
+    stage('dev-provider-check') {
+        def response = httpRequest url: 'http://broker_app/pacticipants/user_service/latest-version/DEV'
+        def props = readJSON text: response.content
+        def devDeployedVersion = props.number
+
+        sh 'rm -rf user-service-dev-deployed-version'
+        dir('user-service-dev-deployed-version') {
+            checkout([$class: 'GitSCM', branches: [[name: "refs/tags/user-service-${devDeployedVersion}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: 'dev-user-service']], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:prashant-ee/user-service.git']]])
+
+            // run cdc tests
+            sh 'mvn clean install'
+        }
+    }
+
+    stage('prod-provider-check') {
+        def response = httpRequest url: 'http://broker_app/pacticipants/user_service/latest-version/PROD'
+        def props = readJSON text: response.content
+        def prodDeployedVersion = props.number
+
+        sh 'rm -rf user-service-prod-deployed-version'
+        dir('user-service-prod-deployed-version') {
+            checkout([$class: 'GitSCM', branches: [[name: "refs/tags/user-service-${prodDeployedVersion}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: 'prod-user-service']], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:prashant-ee/user-service.git']]])
+
+            // run cdc tests
+            sh 'mvn clean install'
+        }
+    }
+}
