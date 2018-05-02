@@ -5,7 +5,7 @@ node {
         def pactBrokerCli = "/usr/share/jenkins/ref/pact/bin/pact-broker"
 
         // check if first time deployment
-        def response = httpRequest responseHandle: 'NONE', url: 'http://broker_app/pacts/provider/user_service/latest/DEV'
+        def response = httpRequest url: 'http://broker_app/pacts/provider/user_service/latest/DEV'
         def props = readJSON text: response.content
 
         if(!props._links.pacts.isEmpty()) {
