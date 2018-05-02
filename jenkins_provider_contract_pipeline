@@ -1,9 +1,9 @@
 node {
 
     stage('latest-provider-check') {
-        def response = httpRequest url: 'http://broker_app/pacticipants/user_service/latest-version/'
-        def props = readJSON text: response.content
-        def latestReleasedVersion = props.number
+        def latestVersionResponse = httpRequest url: 'http://broker_app/pacticipants/user_service/latest-version/'
+        def versionResponseJson = readJSON text: latestVersionResponse.content
+        def latestReleasedVersion = versionResponseJson.number
 
         sh 'rm -rf user-service-latest-released-version'
         dir('user-service-latest-released-version') {
@@ -27,9 +27,9 @@ node {
     }
 
     stage('dev-provider-check') {
-        def devResponse = httpRequest url: 'http://broker_app/pacticipants/user_service/latest-version/DEV'
-        def devProps = readJSON text: devResponse.content
-        def devDeployedVersion = devProps.number
+        def devVersionResponse = httpRequest url: 'http://broker_app/pacticipants/user_service/latest-version/DEV'
+        def versionResponseJson = readJSON text: devVersionResponse.content
+        def devDeployedVersion = versionResponseJson.number
 
         sh 'rm -rf user-service-dev-deployed-version'
         dir('user-service-dev-deployed-version') {
@@ -53,9 +53,9 @@ node {
     }
 
     stage('prod-provider-check') {
-        def prodResponse = httpRequest url: 'http://broker_app/pacticipants/user_service/latest-version/PROD'
-        def prodProps = readJSON text: prodResponse.content
-        def prodDeployedVersion = prodProps.number
+        def prodVersionResponse = httpRequest url: 'http://broker_app/pacticipants/user_service/latest-version/PROD'
+        def versionResponseJson = readJSON text: prodVersionResponse.content
+        def prodDeployedVersion = versionResponseJson.number
 
         sh 'rm -rf user-service-prod-deployed-version'
         dir('user-service-prod-deployed-version') {
