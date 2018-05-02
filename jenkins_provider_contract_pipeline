@@ -10,7 +10,19 @@ node {
             checkout([$class: 'GitSCM', branches: [[name: "refs/tags/user-service-${latestReleasedVersion}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: 'latest-user-service']], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:prashant-ee/user-service.git']]])
 
             // run cdc tests
-            sh 'mvn clean install'
+            sh 'mvn clean install -Dpact.verifier.publishResults=false'
+
+            // publish verification results back to pact broker
+            def response = httpRequest url: "http://broker_app/pacts/provider/user_service/consumer/order_service/latest", validResponseCodes: '100:399,404'
+            if(response.status == 200) {
+                def props = readJSON text: response.content
+                def publishUrl = props._links["pb:publish-verification-results"].href
+
+                httpRequest customHeaders: [[maskValue: false, name: 'Content-Type', value: 'application/json']], httpMode: 'POST', requestBody: """{
+                                  "success": true,
+                                  "providerApplicationVersion": "${latestReleasedVersion}"
+                                }""", url: publishUrl
+            }
         }
     }
 
@@ -24,7 +36,19 @@ node {
             checkout([$class: 'GitSCM', branches: [[name: "refs/tags/user-service-${devDeployedVersion}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: 'dev-user-service']], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:prashant-ee/user-service.git']]])
 
             // run cdc tests
-            sh 'mvn clean install'
+            sh 'mvn clean install -Dpact.verifier.publishResults=false'
+
+            // publish verification results back to pact broker
+            def response = httpRequest url: "http://broker_app/pacts/provider/user_service/consumer/order_service/latest", validResponseCodes: '100:399,404'
+            if(response.status == 200) {
+                def props = readJSON text: response.content
+                def publishUrl = props._links["pb:publish-verification-results"].href
+
+                httpRequest customHeaders: [[maskValue: false, name: 'Content-Type', value: 'application/json']], httpMode: 'POST', requestBody: """{
+                                  "success": true,
+                                  "providerApplicationVersion": "${devDeployedVersion}"
+                                }""", url: publishUrl
+            }
         }
     }
 
@@ -38,7 +62,19 @@ node {
             checkout([$class: 'GitSCM', branches: [[name: "refs/tags/user-service-${prodDeployedVersion}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: 'prod-user-service']], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:prashant-ee/user-service.git']]])
 
             // run cdc tests
-            sh 'mvn clean install'
+            sh 'mvn clean install -Dpact.verifier.publishResults=false'
+
+            // publish verification results back to pact broker
+            def response = httpRequest url: "http://broker_app/pacts/provider/user_service/consumer/order_service/latest", validResponseCodes: '100:399,404'
+            if(response.status == 200) {
+                def props = readJSON text: response.content
+                def publishUrl = props._links["pb:publish-verification-results"].href
+
+                httpRequest customHeaders: [[maskValue: false, name: 'Content-Type', value: 'application/json']], httpMode: 'POST', requestBody: """{
+                                  "success": true,
+                                  "providerApplicationVersion": "${prodDeployedVersion}"
+                                }""", url: publishUrl
+            }
         }
     }
 }
