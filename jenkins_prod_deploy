@@ -1,0 +1,32 @@
+node {
+    properties([parameters([string(defaultValue: '', description: 'Version of user_service to deploy in environment.', name: 'version', trim: true)])])
+
+    stage('deploy-compatibility') {
+        def pactBrokerCli = "/usr/share/jenkins/ref/pact/bin/pact-broker"
+
+        // check if first time deployment
+        def response = httpRequest url: 'http://broker_app/pacts/provider/user_service/latest/PROD'
+        def props = readJSON text: response.content
+
+        if(!props._links.pacts.isEmpty()) {
+            echo "Found some pacts in PROD environments. Checking compatibility"
+            def statusCode = sh script: "${pactBrokerCli} can-i-deploy --pacticipant user_service --version ${params.version} --to PROD --broker-base-url http://broker_app", returnStatus: true
+
+            if(statusCode == 1) {
+                error("The version is not compatible with services running in PROD environment")
+            }
+        } else {
+            echo "No pact to check compatibility. First time provider's deployment. Proceeding with deployment."
+        }
+    }
+
+    stage('Deploy') {
+        echo "Deploying to PROD as compatibility check passed"
+    }
+
+    stage('create-pact-tag') {
+        def pactBrokerCli = "/usr/share/jenkins/ref/pact/bin/pact-broker"
+
+        sh "${pactBrokerCli} create-version-tag --pacticipant user_service --version ${params.version} --tag PROD --broker-base-url http://broker_app"
+    }
+}
