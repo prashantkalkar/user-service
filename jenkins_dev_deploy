@@ -1,5 +1,5 @@
 node {
-    properties(parameters([string(defaultValue: '', description: 'Version to deploy in environment.', name: 'version', trim: true)]))
+    properties([parameters([string(defaultValue: '', description: 'Version to deploy in environment.', name: 'version', trim: true)])])
 
     stage('deploy-compatibility') {
         def pactBrokerCli = "/usr/share/jenkins/ref/pact/bin/pact-broker"
