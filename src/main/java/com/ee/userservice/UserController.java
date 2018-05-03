@@ -14,15 +14,15 @@ public class UserController {
 
     public static class User {
 
-        private String name;
+        private String fullName;
         private String email;
         private String contact;
         private String address;
         private String primeMemberId;
         private String pickupRequested;
 
-        public User(String name, String email, String contact, String address, String primeMemberId, String pickupRequested) {
-            this.name = name;
+        public User(String fullName, String email, String contact, String address, String primeMemberId, String pickupRequested) {
+            this.fullName = fullName;
             this.email = email;
             this.contact = contact;
             this.address = address;
@@ -30,8 +30,8 @@ public class UserController {
             this.pickupRequested = pickupRequested;
         }
 
-        public String getName() {
-            return name;
+        public String getFullName() {
+            return fullName;
         }
 
         public String getEmail() {
