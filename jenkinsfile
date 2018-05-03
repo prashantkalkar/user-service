@@ -38,8 +38,8 @@ node {
 
     // need a better strategy for post build notifications - may be declarative pipeline.
     stage("slack notification") {
-        if(currentBuild.result == "SUCCESS" && (currentBuild.getPreviousBuild().result == 'FAILURE' || currentBuild.getPreviousBuild().result == 'UNSTABLE')) {
-            slackSend (color: '#3EB991', message: "Back to normal, SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", channel: '#user-service-team')
+        if(currentBuild.getPreviousBuild().result == 'FAILURE' || currentBuild.getPreviousBuild().result == 'UNSTABLE') {
+            slackSend (color: '#3EB991', message: "BACK TO NORMAL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", channel: '#user-service-team')
         }
 
         if(currentBuild.result == "FAILURE") {
