@@ -10,7 +10,7 @@ node {
             checkout([$class: 'GitSCM', branches: [[name: "refs/tags/user-service-${latestReleasedVersion}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: 'latest-user-service']], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:prashant-ee/user-service.git']]])
 
             // run cdc tests
-            sh 'mvn clean install -Dpact.verifier.publishResults=false'
+            sh 'mvn clean install -Dpact.verifier.publishResults=false -Dmaven.test.failure.ignore=true'
 
             // publish verification results back to pact broker
             def response = httpRequest url: "http://broker_app/pacts/provider/user_service/consumer/order_service/latest", validResponseCodes: '100:399,404'
@@ -36,7 +36,7 @@ node {
             checkout([$class: 'GitSCM', branches: [[name: "refs/tags/user-service-${devDeployedVersion}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: 'dev-user-service']], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:prashant-ee/user-service.git']]])
 
             // run cdc tests
-            sh 'mvn clean install -Dpact.verifier.publishResults=false'
+            sh 'mvn clean install -Dpact.verifier.publishResults=false -Dmaven.test.failure.ignore=true'
 
             // publish verification results back to pact broker
             def response = httpRequest url: "http://broker_app/pacts/provider/user_service/consumer/order_service/latest", validResponseCodes: '100:399,404'
@@ -62,7 +62,7 @@ node {
             checkout([$class: 'GitSCM', branches: [[name: "refs/tags/user-service-${prodDeployedVersion}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: 'prod-user-service']], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:prashant-ee/user-service.git']]])
 
             // run cdc tests
-            sh 'mvn clean install -Dpact.verifier.publishResults=false'
+            sh 'mvn clean install -Dpact.verifier.publishResults=false -Dmaven.test.failure.ignore=true'
 
             // publish verification results back to pact broker
             def response = httpRequest url: "http://broker_app/pacts/provider/user_service/consumer/order_service/latest", validResponseCodes: '100:399,404'
