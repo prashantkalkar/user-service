@@ -28,49 +28,7 @@ node {
             def artifactFile = findFiles glob: 'target/user-service*.jar'
             def versionNo = artifactFile[0].name.minus("user-service-").minus(".jar")
 
-            // publish verification result to pact broker - It might be possible to extract it in a function.
-            def response = httpRequest url: "http://broker_app/pacts/provider/user_service/consumer/order_service/latest", validResponseCodes: '100:399,404'
-            if(response.status == 200) {
-                def props = readJSON text: response.content
-                def publishUrl = props._links["pb:publish-verification-results"].href
-
-                httpRequest customHeaders: [[maskValue: false, name: 'Content-Type', value: 'application/json']], httpMode: 'POST', requestBody: """{
-                                  "success": true,
-                                  "providerApplicationVersion": "${versionNo}"
-                                }""", url: publishUrl
-
-            }
-
-            def devResponse = httpRequest url: "http://broker_app/pacts/provider/user_service/consumer/order_service/DEV", validResponseCodes: '100:399,404'
-            if(devResponse.status == 200) {
-                def props = readJSON text: devResponse.content
-                def publishUrl = props._links["pb:publish-verification-results"].href
-
-                httpRequest customHeaders: [[maskValue: false, name: 'Content-Type', value: 'application/json']], httpMode: 'POST', requestBody: """{
-                                  "success": true,
-                                  "providerApplicationVersion": "${versionNo}"
-                                }""", url: publishUrl
-
-            }
-
-
-            def prodResponse = httpRequest url: "http://broker_app/pacts/provider/user_service/consumer/order_service/PROD", validResponseCodes: '100:399,404'
-            if(prodResponse.status == 200) {
-                def props = readJSON text: prodResponse.content
-                def publishUrl = props._links["pb:publish-verification-results"].href
-
-                httpRequest customHeaders: [[maskValue: false, name: 'Content-Type', value: 'application/json']], httpMode: 'POST', requestBody: """{
-                                  "success": true,
-                                  "providerApplicationVersion": "${versionNo}"
-                                }""", url: publishUrl
-
-            }
-        }
-    }
-
-    stage('Deploy') {
-        if(currentBuild.result != 'ABORTED' && currentBuild.result != 'FAILURE') {
-            echo 'deploy'
+            sh "mvn clean install -Dpact.provider.version=${versionNo}"
         }
     }
 }
