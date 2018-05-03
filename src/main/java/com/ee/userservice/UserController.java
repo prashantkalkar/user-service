@@ -14,20 +14,20 @@ public class UserController {
 
     public static class User {
 
-        private String name;
+        private String fullName;
         private String email;
         private String contact;
         private String address;
 
         public User(String name, String email, String contact, String address) {
-            this.name = name;
+            this.fullName = name;
             this.email = email;
             this.contact = contact;
             this.address = address;
         }
 
-        public String getName() {
-            return name;
+        public String getFullName() {
+            return fullName;
         }
 
         public String getEmail() {
