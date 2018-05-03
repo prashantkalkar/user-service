@@ -11,7 +11,11 @@ node {
 
     stage('Build & Test') {
         if(currentBuild.result != 'ABORTED' && currentBuild.result != 'FAILURE') {
-            sh 'mvn clean install -Dpact.verifier.publishResults=false'
+            def buildResult = sh returnStatus: true, script: 'mvn clean install -Dpact.verifier.publishResults=false'
+
+            if(buildResult == 1) {
+                currentBuild.result = 'FAILURE'
+            }
         }
     }
 
@@ -32,6 +36,7 @@ node {
         }
     }
 
+    // need a better strategy for post build notifications - may be declarative pipeline.
     stage("slack notification") {
         if(currentBuild.result == "SUCCESS" && (currentBuild.getPreviousBuild().result == 'FAILURE' || currentBuild.getPreviousBuild().result == 'UNSTABLE')) {
             slackSend (color: '#3EB991', message: "Back to normal, SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", channel: '#user-service-team')
