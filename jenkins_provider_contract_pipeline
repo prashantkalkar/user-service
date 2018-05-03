@@ -10,7 +10,10 @@ node {
             checkout([$class: 'GitSCM', branches: [[name: "refs/tags/user-service-${latestReleasedVersion}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: 'latest-user-service']], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:prashant-ee/user-service.git']]])
 
             // run cdc tests
-            sh "mvn clean install -Dpact.provider.version=${latestReleasedVersion} -fn"
+            def testResult = sh returnStatus: true, script: "mvn clean install -Dpact.provider.version=${latestReleasedVersion}"
+            if(testResult == 1) {
+                currentBuild.result = 'FAILURE'
+            }
         }
     }
 
@@ -24,7 +27,10 @@ node {
             checkout([$class: 'GitSCM', branches: [[name: "refs/tags/user-service-${devDeployedVersion}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: 'dev-user-service']], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:prashant-ee/user-service.git']]])
 
             // run cdc tests
-            sh "mvn clean install -Dpact.provider.version=${devDeployedVersion} -fn"
+            def testResult = sh returnStatus: true, script: "mvn clean install -Dpact.provider.version=${devDeployedVersion}"
+            if(testResult == 1) {
+                currentBuild.result = 'FAILURE'
+            }
         }
     }
 
@@ -38,7 +44,10 @@ node {
             checkout([$class: 'GitSCM', branches: [[name: "refs/tags/user-service-${prodDeployedVersion}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: 'prod-user-service']], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:prashant-ee/user-service.git']]])
 
             // run cdc tests
-            sh "mvn clean install -Dpact.provider.version=${prodDeployedVersion} -fn"
+            def testResult = sh returnStatus: true, script: "mvn clean install -Dpact.provider.version=${prodDeployedVersion}"
+            if(testResult == 1) {
+                currentBuild.result = 'FAILURE'
+            }
         }
     }
 }
