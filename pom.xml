@@ -4,7 +4,7 @@
 
     <groupId>com.ee</groupId>
     <artifactId>user-service</artifactId>
-    <version>0.1.12-SNAPSHOT</version>
+    <version>0.1.12</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -16,7 +16,7 @@
         <connection>scm|git:git@github.com:prashant-ee/user-service.git</connection>
         <url>scm|git:git@github.com:prashant-ee/user-service.git</url>
         <developerConnection>scm:git:git@github.com:prashant-ee/user-service.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>user-service-0.1.12</tag>
     </scm>
 
     <distributionManagement>
