@@ -14,21 +14,21 @@ public class UserController {
 
     public static class User {
 
-        private String fullName;
+        private String name;
         private String email;
         private String contact;
         private String address;
 
 
-        public User(String fullName, String email, String contact, String address) {
-            this.fullName = fullName;
+        public User(String name, String email, String contact, String address) {
+            this.name = name;
             this.email = email;
             this.contact = contact;
             this.address = address;
         }
 
-        public String getFullName() {
-            return fullName;
+        public String getName() {
+            return name;
         }
 
         public String getEmail() {
