@@ -13,8 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @RunWith(SpringRestPactRunner.class)
 @Provider("user_service")
-@PactFolder("../order-service/target/pacts")
-//@PactBroker(host = "broker_app", port = "80", tags = {"latest", "DEV", "PROD"})
+//@PactFolder("../order-service/target/pacts")
+@PactBroker(host = "broker_app", port = "80", tags = {"latest", "DEV", "PROD"})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserServiceTest {
 
