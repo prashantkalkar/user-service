@@ -5,13 +5,13 @@ Repo to contain producer code. Part of the CDC expert talk.
 
 Make sure you have <strong>jdk</strong> and <strong>mvn</strong> installed and added in the path
 ### Run following command to make service up:
-```mvn spring-boot:run -Dserver.port=9999```
+```mvn spring-boot:run -Dserver.port=8888```
 
 ## Service endpoints:
   
   ### /user GET request:
   ```
-  curl -X GET http://localhost:9999/user/myID 
+  curl -X GET http://localhost:8888/user/myID 
   ```
   ### Response: HTTP 200 with body:
   ```
