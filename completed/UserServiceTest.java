@@ -18,5 +18,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserServiceTest {
 
-    // TODO - Implement so that pact can be verified.
+    @TestTarget
+    public final Target target = new SpringBootHttpTarget();
+
+    @State("User Paresh exists")
+    public void noState() {
+        // Setup user paresh details in database for the test.
+        System.out.println("Setting up user Paresh in database");
+    }
 }
